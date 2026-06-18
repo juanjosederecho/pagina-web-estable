@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ayllu Ariri - Reto de Emprendimiento</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--primary:#0f766e;--accent:#f59e0b;--dark:#1f2937;--ok:#16a34a;--bad:#dc2626}*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#e0f2fe,#f8fafc);color:var(--dark)}.app{max-width:760px;margin:auto;padding:18px}.hero{background:linear-gradient(135deg,#0f766e,#134e4a);color:#fff;border-radius:22px;padding:22px;text-align:center;box-shadow:0 8px 22px rgba(0,0,0,.18)}.hero h1{margin:0;font-size:28px}.hero p{margin:8px 0 0;font-size:16px}.card{background:var(--card);border-radius:20px;padding:20px;margin-top:18px;box-shadow:0 6px 20px rgba(15,23,42,.12)}label{font-weight:bold;display:block;margin-bottom:8px}input{width:100%;padding:15px;border:2px solid #d1d5db;border-radius:14px;font-size:17px}.btn{width:100%;border:0;border-radius:14px;padding:15px 16px;font-size:17px;font-weight:bold;color:white;background:var(--primary);margin-top:14px;cursor:pointer}.btn.secondary{background:#334155}.btn:disabled{opacity:.55}.question-count{font-weight:bold;color:var(--primary);margin-bottom:10px}.question{font-size:20px;font-weight:bold;line-height:1.35;margin:10px 0 18px}.option{display:block;width:100%;text-align:left;background:#f8fafc;border:2px solid #cbd5e1;border-radius:14px;padding:14px;margin:10px 0;font-size:16px;cursor:pointer}.option.correct{border-color:var(--ok);background:#dcfce7}.option.wrong{border-color:var(--bad);background:#fee2e2}.feedback{font-weight:bold;margin-top:10px}.progress{height:12px;background:#e5e7eb;border-radius:999px;overflow:hidden;margin-top:16px}.bar{height:100%;width:0;background:var(--accent);transition:.25s}.result{text-align:center}.score{font-size:56px;font-weight:bold;color:var(--primary);margin:12px 0}.badge{display:inline-block;background:#fef3c7;color:#92400e;border-radius:999px;padding:8px 14px;font-weight:bold}.small{font-size:14px;color:#475569}.hidden{display:none}.footer{text-align:center;margin-top:18px;color:#64748b;font-size:13px}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="hero">
+    <h1>CREA Y EMPRENDE 2026</h1>
+    <p><strong>Ayllu Ariri</strong> – Guardián de la comunidad</p>
+    <p>Reto de emprendimiento y Design Thinking</p>
+  </section>
+
+  <section id="start" class="card">
+    <h2>Ingreso del equipo</h2>
+    <p>Escriban el nombre de uno de los integrantes del grupo para iniciar.</p>
+    <label for="studentName">Nombre del integrante</label>
+    <input id="studentName" placeholder="Ejemplo: Juan" autocomplete="off" />
+    <button class="btn" onclick="startQuiz()">Iniciar reto</button>
+    <p class="small">Regla: lean bien, conversen rápido y elijan una alternativa.</p>
+  </section>
+
+  <section id="quiz" class="card hidden">
+    <div class="question-count" id="counter"></div>
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div class="feedback" id="feedback"></div>
+    <button class="btn secondary hidden" id="nextBtn" onclick="nextQuestion()">Siguiente</button>
+  </section>
+
+  <section id="result" class="card result hidden">
+    <span class="badge">Resultado final</span>
+    <h2 id="resultName"></h2>
+    <div class="score" id="score"></div>
+    <p id="message"></p>
+    <button class="btn" onclick="restartQuiz()">Volver a intentar</button>
+  </section>
+  <div class="footer">Rosaspata, Huancané · Seguridad escolar y comunitaria</div>
+</div>
+<script>
+const questions = [
+{q:'¿Qué significa “Ayllu Ariri” en el proyecto de emprendimiento?', options:['Vendedor de productos escolares','Guardián de la comunidad','Juego para estudiantes','Nombre de una tienda','Grupo de música escolar'], answer:1},
+{q:'¿Cuál es el problema principal que busca solucionar el emprendimiento “Ayllu Ariri”?', options:['La falta de juegos en el colegio','La inseguridad o incidencias dentro del colegio y la comunidad','La falta de tareas escolares','La venta de alimentos saludables','La limpieza de las aulas'], answer:1},
+{q:'En Design Thinking, la etapa de “empatizar” sirve para:', options:['Vender el producto rápidamente','Copiar ideas de otros colegios','Comprender las necesidades y problemas de las personas','Elegir el color del logo','Hacer publicidad en redes sociales'], answer:2},
+{q:'Para empatizar con la comunidad de Rosaspata, los estudiantes podrían:', options:['Preguntar a estudiantes, docentes y vecinos qué problemas de seguridad observan','Inventar problemas sin preguntar a nadie','Comprar materiales sin planificar','Hacer solo dibujos del proyecto','Pensar únicamente en ganar dinero'], answer:0},
+{q:'¿Cuál sería una buena propuesta de valor para “Ayllu Ariri”?', options:['Una aplicación o botón que ayude a reportar incidencias en tiempo real','Una página para vender ropa','Un concurso de canto escolar','Una tienda de golosinas','Un juego sin relación con la seguridad'], answer:0},
+{q:'En Design Thinking, la etapa de “definir” consiste en:', options:['Identificar claramente el problema que se quiere resolver','Comprar todos los materiales','Presentar el proyecto sin investigarlo','Pintar carteles decorativos','Elegir al azar una idea'], answer:0},
+{q:'Si los estudiantes crean muchas ideas para mejorar la seguridad, están trabajando la etapa de:', options:['Evaluar','Idear','Vender','Archivar','Copiar'], answer:1},
+{q:'¿Qué sería un prototipo del proyecto “Ayllu Ariri”?', options:['Una maqueta, dibujo, formulario o botón de alerta de prueba','Un cuaderno sin información','Una lista de asistencia','Una tarea de matemática','Un afiche sin explicación'], answer:0},
+{q:'¿Por qué es importante probar el botón de alerta antes de usarlo oficialmente?', options:['Para saber si funciona bien y si realmente ayuda a reportar incidencias','Para perder tiempo en clase','Para evitar escuchar opiniones','Para cambiar el nombre del colegio','Para no mejorar el proyecto'], answer:0},
+{q:'¿Qué actitud emprendedora deben mostrar los estudiantes al desarrollar “Ayllu Ariri”?', options:['Trabajar en equipo, observar problemas reales y buscar soluciones útiles','Esperar que otros hagan todo','Burlarse de las ideas de sus compañeros','Copiar proyectos sin mejorarlos','Abandonar el proyecto cuando hay dificultades'], answer:0}
+];
+let current=0, score=0, name='';
+function startQuiz(){
+  name=document.getElementById('studentName').value.trim();
+  if(!name){alert('Escribe el nombre de un integrante.');return;}
+  document.getElementById('start').classList.add('hidden');
+  document.getElementById('quiz').classList.remove('hidden');
+  current=0; score=0; showQuestion();
+}
+function showQuestion(){
+  const item=questions[current];
+  document.getElementById('counter').textContent='Pregunta '+(current+1)+' de '+questions.length;
+  document.getElementById('bar').style.width=((current)/questions.length*100)+'%';
+  document.getElementById('question').textContent=item.q;
+  document.getElementById('feedback').textContent='';
+  document.getElementById('nextBtn').classList.add('hidden');
+  const options=document.getElementById('options'); options.innerHTML='';
+  item.options.forEach((op,i)=>{
+    const btn=document.createElement('button');
+    btn.className='option';
+    btn.textContent=String.fromCharCode(65+i)+') '+op;
+    btn.onclick=()=>selectOption(btn,i);
+    options.appendChild(btn);
+  });
+}
+function selectOption(btn,i){
+  const item=questions[current];
+  const all=document.querySelectorAll('.option');
+  all.forEach(b=>b.disabled=true);
+  if(i===item.answer){btn.classList.add('correct');score++;document.getElementById('feedback').textContent='Correcto.';}
+  else{btn.classList.add('wrong');all[item.answer].classList.add('correct');document.getElementById('feedback').textContent='Incorrecto. Revisen la respuesta correcta.';}
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+function nextQuestion(){
+  current++;
+  if(current<questions.length) showQuestion(); else showResult();
+}
+function showResult(){
+  document.getElementById('bar').style.width='100%';
+  document.getElementById('quiz').classList.add('hidden');
+  document.getElementById('result').classList.remove('hidden');
+  document.getElementById('resultName').textContent='Equipo de '+name;
+  document.getElementById('score').textContent=score+' / '+questions.length;
+  let msg='Sigan practicando emprendimiento y Design Thinking.';
+  if(score>=9) msg='Excelente. El equipo domina la idea de Ayllu Ariri.';
+  else if(score>=7) msg='Buen trabajo. Falta reforzar algunos conceptos.';
+  else if(score>=5) msg='Resultado regular. Revisen las etapas de Design Thinking.';
+  document.getElementById('message').textContent=msg;
+}
+function restartQuiz(){document.getElementById('result').classList.add('hidden');document.getElementById('start').classList.remove('hidden');document.getElementById('studentName').value='';}
+</script>
+</body>
+</html>
